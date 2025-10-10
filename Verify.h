@@ -7,7 +7,8 @@ enum ASMerr_t {
     ASM_CORRECT = 0,
     EXTRA_ARGUMENT = 1,
     MISSING_ARGUMENT = 2,
-    WRONG_FUNC = 3
+    WRONG_FUNC = 3,
+    WRONG_REG = 4
 };
 
 enum ASMcommands{
@@ -21,11 +22,13 @@ enum ASMcommands{
     ADD = 6,
     MUL = 7,
     DIV = 8,
-    JB = 9
+    JB = 9,
+    PUSHR = 10,
+    POPR = 11
 
 };
 
-//#define WRONG_VALUE_CONST 0x11A15ED
+
 
 #define ASM_VERIFY(mode, value, IP) \
     do { \

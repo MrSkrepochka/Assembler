@@ -19,9 +19,13 @@ void PrintError (ASMerr_t err)
         case EXTRA_ARGUMENT:
             fprintf(stdout, "EXTRA ARGUMENT\n");
             break;
+        case WRONG_REG:
+            fprintf(stdout, "Attempting to interact unexisting register");
+            break;
         default:
             fprintf(stdout, "ASM_DUMP triggered for an unknown reason\n");
             break;
+
     }
 }
 
