@@ -5,15 +5,15 @@
 void TranslateCode(InputData buffer)
 {
     char ByteCode_name[20] = "";
-    fprintf(stdin, "Enter your byte-code file name (.txt)\n");
+    fprintf(stdout, "Enter your byte-code file name (.txt)\n");
     fscanf(stdin, "%19s", ByteCode_name);
 
     FILE* ByteCode_file = fopen(ByteCode_name, "w");
-    fprintf(ByteCode_file, "%zu ", nArgs_plus_commands);
+    fprintf(ByteCode_file, "%zu ", nArgs_plus_commands); // если пустая строка?
 
-    size_t linesRead = 0;
+    size_t IP = 0;
 
-    while (linesRead < buffer.nLines)
+    while (IP < buffer.nLines)
     {
         int elements_read = 0;
         char command[20] = "";
@@ -21,7 +21,7 @@ void TranslateCode(InputData buffer)
         int arg = 0;
         int extra_arg = 0;
 
-        elements_read = sscanf(buffer.line_ptr[linesRead],"%19s %d %d", command, &arg, &extra_arg);
+        elements_read = sscanf(buffer.line_ptr[IP],"%19s %d %d", command, &arg, &extra_arg);
 
         ASMcommands mode = WRONG_COMMAND;
 
@@ -49,6 +49,11 @@ void TranslateCode(InputData buffer)
         if (strcmp (command, "DIV")== 0 )
         mode = DIV;
 
+        if (mode == WRONG_COMMAND && elements_read == 0)
+        {
+            fprintf(ByteCode_file, "%d ", SKIP_LINE);
+            mode = SKIP_LINE;
+        }
 
         switch (mode)
         {
@@ -57,61 +62,81 @@ void TranslateCode(InputData buffer)
 
             ASM_error = ASM_CORRECT;
             fprintf(ByteCode_file, "%d ", INIT);
-            ASM_VERIFY(INIT, elements_read);
+            ASM_VERIFY(INIT, elements_read, IP);
             if (ASM_error == ASM_CORRECT)
                 fprintf(ByteCode_file, "%d ", arg);
-            else
-                nErrors++;
-            linesRead++;
+            IP++;
             break;
 
         case PUSH:
             ASM_error = ASM_CORRECT;
             fprintf(ByteCode_file, "%d ", PUSH);
-            ASM_VERIFY(PUSH, elements_read);
+            ASM_VERIFY(PUSH, elements_read, IP);
 
             if (ASM_error == ASM_CORRECT)
                 fprintf(ByteCode_file, "%d ", arg);
-            else
-                nErrors++;
-            linesRead++;
+            IP++;
             break;
 
         case POP:
             ASM_error = ASM_CORRECT;
             fprintf(ByteCode_file, "%d ", POP);
-            ASM_VERIFY(POP, elements_read);
-            if (ASM_error != ASM_CORRECT)
-                nErrors++;
-            linesRead++;
+            ASM_VERIFY(POP, elements_read, IP);
+
+            IP++;
+
+            break;
+        case MUL:
+            ASM_error = ASM_CORRECT;
+            fprintf(ByteCode_file, "%d ", MUL);
+            ASM_VERIFY(POP, elements_read, IP);
+            IP++;
 
             break;
         case DESTROY:
             ASM_error = ASM_CORRECT;
             fprintf(ByteCode_file, "%d ", DESTROY);
-            ASM_VERIFY(DESTROY, elements_read);
-            if (ASM_error != ASM_CORRECT)
-                nErrors++;
-            linesRead++;
+            ASM_VERIFY(POP, elements_read, IP);
+
+            IP++;
 
             break;
         case EXIT:
             fprintf(ByteCode_file, "%d ", EXIT);
-            ASM_VERIFY(EXIT, elements_read);
+            ASM_VERIFY(POP, elements_read, IP);
+
+            IP++;
             if (ASM_error != ASM_CORRECT)
                 nErrors++;
-            linesRead++;
-
             return;
             break;
-        case WRONG_COMMAND: 
-            ASM_DUMP(WRONG_FUNC);
+        case ADD:
+            fprintf(ByteCode_file, "%d ", ADD);
+            ASM_VERIFY(POP, elements_read, IP);
+            IP++;
+            break;
+        case DIV:
+
+            fprintf(ByteCode_file, "%d ", DIV);
+            ASM_VERIFY(POP, elements_read, IP);
+            IP++;
+            break;
+        case WRONG_COMMAND:
+
+            ASM_DUMP(WRONG_FUNC, IP);
             nErrors++;
-            linesRead++;
+            IP++;
+            break;
+
+        case SKIP_LINE:
+            IP++;
             break;
         default:
             break;
         }
+
+        if (ASM_error != ASM_CORRECT)
+                nErrors++;
     }
 
     fclose(ByteCode_file);

@@ -11,7 +11,8 @@ enum ASMerr_t {
 };
 
 enum ASMcommands{
-    WRONG_COMMAND = 0,
+    WRONG_COMMAND = -1,
+    SKIP_LINE = 0,
     EXIT = 1,
     INIT = 2,
     PUSH = 3,
@@ -26,17 +27,17 @@ enum ASMcommands{
 
 //#define WRONG_VALUE_CONST 0x11A15ED
 
-#define ASM_VERIFY(mode, value) \
+#define ASM_VERIFY(mode, value, IP) \
     do { \
         ASMerr_t __code = Verify(mode, value); \
         if (__code != ASM_CORRECT) \
-            {ASM_DUMP(__code);} else \
+            {ASM_DUMP(__code, IP);} else \
             {ASM_error = ASM_CORRECT;} \
     } while (0)
 
-#define ASM_DUMP(code) \
+#define ASM_DUMP(code, IP) \
     do { \
-        fprintf(stdout, "Program failed: "); \
+        fprintf(stdout, "Program failed in %s:%zu ", ASM_file_name, (IP +1)); \
         PrintError(code); \
         ASM_error = code; \
     } while (0)

@@ -1,6 +1,7 @@
 #include "InputReader.h"
 
 size_t nArgs_plus_commands = 0;
+char ASM_file_name[50] = "";
 
 size_t CountLines (char* poem)
 {
@@ -35,7 +36,6 @@ void ReadInput (InputData* buffer)
     nArgs_plus_commands += buffer ->nLines; // в глобальную константу для использования записи первым элементом в файл с байткодом
 
     buffer -> line_ptr[0] = buffer -> contents;
-
     DivideInput(buffer);
 
 

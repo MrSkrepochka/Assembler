@@ -20,6 +20,7 @@ struct InputData{
 };
 
 extern size_t nArgs_plus_commands;
+extern char ASM_file_name[50];
 
 size_t CountLines (char* poem);
 void DivideInput (InputData* buffer);
