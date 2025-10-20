@@ -3,12 +3,9 @@
 size_t nArgs_plus_commands = 0;
 char ASM_file_name[50] = "";
 size_t number_of_labels = 0;
-Label All_labels[10] = {{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1}};
-/*int Registers[16] = {WRONG_VALUE_CONST, WRONG_VALUE_CONST, WRONG_VALUE_CONST, WRONG_VALUE_CONST, WRONG_VALUE_CONST, WRONG_VALUE_CONST,
-    WRONG_VALUE_CONST, WRONG_VALUE_CONST, WRONG_VALUE_CONST, WRONG_VALUE_CONST, WRONG_VALUE_CONST, WRONG_VALUE_CONST,
-    WRONG_VALUE_CONST, WRONG_VALUE_CONST, WRONG_VALUE_CONST, WRONG_VALUE_CONST};*/
-    // в процессор надо перенести и инициализацию через функцию
-
+Label All_labels[20] = {{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},
+                        {-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1}};
+                        // бля надо через функцию // ubrat otsuda
 size_t CountLines (char* poem)
 {
     size_t nLines = 0;
@@ -39,7 +36,7 @@ void ReadInput (InputData* buffer)
     buffer -> nLines = CountLines(buffer -> contents);
     buffer -> line_ptr = (char**) calloc (buffer -> nLines, sizeof(char*));
 
-    nArgs_plus_commands += buffer ->nLines; // в глобальную константу для записи первым элементом в файл с байткодом
+    //nArgs_plus_commands += buffer ->nLines; // в глобальную константу для записи первым элементом в файл с байткодом
 
     buffer -> line_ptr[0] = buffer -> contents;
     DivideInput(buffer);

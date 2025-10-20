@@ -6,20 +6,38 @@
 void TranslateCode(InputData buffer);
 ASMcommands DefineMode (char* command);
 void FillFile(int* array, size_t counter, FILE* file_pointer);
+void VerifyLabels (InputData buffer, int* array, size_t counter);
 
-#define PUSHR_POPR(array, counter, label, IP) \
-    do { \
-        if (label[0] >= 'A' && label[0] <= 'P' && label[1] == 'X') \
-            {   \
-                array[counter] = (int) label[0] - 65; \
-                counter++; \
-            } else \
-            { \
-                ASM_DUMP(WRONG_REG, IP); \
-                fprintf(stdout, " %s\n", label);\
-                nErrors++; \
-            } \
+#define PUSHR_POPR(array, counter, label, IP)                      \
+    do {                                                           \
+        if ((label)[0] >= 'A' && (label)[0] <= 'P' && (label)[1] == 'X') { \
+            (array)[*counter] = (int)((label)[0] - 'A');           \
+            (*counter)++;                                          \
+            printf("code_counter after PUSHR/POPR = %zu\n", *counter); \
+        } else {                                                   \
+            ASM_DUMP(WRONG_REG, (IP));                             \
+            fprintf(stdout, " %s\n", (label));                     \
+            nErrors++;                                             \
+        }                                                          \
     } while (0)
 
+#define JUMPS(array_for_code, code_counter_ptr, IP, label)                 \
+    do {                                                                   \
+        int local_arg = 0;                                                 \
+        if ((label)[0] == ':') {                                           \
+            local_arg = atoi((label) + 1);                                 \
+            if (local_arg == 0 && strcmp((label) + 1, "0") != 0) {         \
+                ASM_DUMP(WRONG_LABEL, (IP));                               \
+            } else {                                                       \
+                (*(code_counter_ptr))++;\
+                printf(" Counter after jump/call %zu\n", *(code_counter_ptr));\
+                (array_for_code)[*(code_counter_ptr)] = local_arg;         \
+            }                                                              \
+        } else {                                                           \
+            ASM_DUMP(WRONG_LABEL, (IP));                                   \
+        }                                                                  \
+        (*(code_counter_ptr))++;                                           \
+        (IP)++;                                                            \
+    } while (0)
 
-#endif
+    #endif

@@ -9,6 +9,7 @@ int main()
     fscanf(stdin, "%49s", ASM_file_name);
 
     InputData buffer = {NULL, NULL, 0, 0, 0};
+    
     if (stat(ASM_file_name, &ASM_file) != 0)
     {
         return 0;

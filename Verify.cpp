@@ -13,6 +13,7 @@ void PrintError (ASMerr_t err)
         case MISSING_ARGUMENT:
             fprintf(stdout, "MISSING_ARGUMENT\n");
             break;
+
         case WRONG_FUNC:
             fprintf(stdout, "MISSING OR WRONG COMMAND\n");
             break;
@@ -22,6 +23,15 @@ void PrintError (ASMerr_t err)
         case WRONG_REG:
             fprintf(stdout, "Attempting to interact unexisting register");
             break;
+        case WRONG_LABEL:
+            fprintf(stdout, "Using wrong label format\n");
+            break;
+        case WRONG_ADDRESS:
+            fprintf(stdout, "Uninitialized label\n");
+            break;
+        case NOWHERE_TO_RETURN:
+            fprintf(stdout, "Missing CALL function for your RET function\n");
+            break;
         default:
             fprintf(stdout, "ASM_DUMP triggered for an unknown reason\n");
             break;
@@ -29,7 +39,7 @@ void PrintError (ASMerr_t err)
     }
 }
 
-ASMerr_t Verify(ASMcommands mode, int nElements)
+ASMerr_t Verify(ASMcommands mode,  int nElements)
 {
 
     switch (mode)
@@ -50,14 +60,6 @@ ASMerr_t Verify(ASMcommands mode, int nElements)
         if (nElements > 1)
             return EXTRA_ARGUMENT;
         break;
-    /*case POP:
-        if (nElements > 1)
-            return EXTRA_ARGUMENT;
-        break;
-    case EXIT:
-        if (nElements > 1)
-            return EXTRA_ARGUMENT;
-        break;*/
     default:
         return ASM_CORRECT;
         break;

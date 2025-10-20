@@ -11,8 +11,6 @@
 #include <string.h>
 #include <assert.h>
 
-#define WRONG_VALUE_CONST 0x11A15ED
-
 struct InputData{
     char* contents;
     char** line_ptr;
@@ -23,10 +21,10 @@ struct InputData{
 
 struct Label{
     int number;
-    int adress;
+    int address;
 };
 
-extern Label All_labels[10];
+extern Label All_labels[20];
 extern size_t number_of_labels;
 extern size_t nArgs_plus_commands;
 extern char ASM_file_name[50];

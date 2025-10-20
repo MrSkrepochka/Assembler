@@ -8,7 +8,10 @@ enum ASMerr_t {
     EXTRA_ARGUMENT = 1,
     MISSING_ARGUMENT = 2,
     WRONG_FUNC = 3,
-    WRONG_REG = 4
+    WRONG_REG = 4,
+    WRONG_LABEL = 5,
+    WRONG_ADDRESS = 6,
+    NOWHERE_TO_RETURN = 7
 };
 
 enum ASMcommands{
@@ -23,8 +26,13 @@ enum ASMcommands{
     MUL = 7,
     DIV = 8,
     JB = 9,
+    JBE = 12,
+    JE = 13,
+    JA = 14,
     PUSHR = 10,
-    POPR = 11
+    POPR = 11,
+    CALL = 15,
+    RET = 16
 
 };
 
@@ -43,6 +51,7 @@ enum ASMcommands{
         fprintf(stdout, "Program failed in %s:%zu ", ASM_file_name, (IP +1)); \
         PrintError(code); \
         ASM_error = code; \
+        nErrors++;\
     } while (0)
 
 extern int nErrors;
