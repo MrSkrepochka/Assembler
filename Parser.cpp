@@ -7,9 +7,10 @@ void TranslateCode(InputData buffer)
     int* array_for_code = (int*) calloc ( 3 * nArgs_plus_commands, sizeof(int));
     size_t code_counter = 0;
 
-    char ByteCode_name[20] = "";
-    fprintf(stdout, "Enter your byte-code file name (.txt)\n");
-    fscanf(stdin, "%19s", ByteCode_name);
+    char ByteCode_name[20] = "ByteCode.txt";
+    //fprintf(stdout, "Enter your byte-code file name (.txt)\n");
+    //fscanf(stdin, "%19s", ByteCode_name);
+
 
     FILE* ByteCode_file = fopen(ByteCode_name, "w");
 
@@ -17,11 +18,11 @@ void TranslateCode(InputData buffer)
 
     while (IP < buffer.nLines)
     {
-        if (code_counter == nArgs_plus_commands)
+        /*if (code_counter == nArgs_plus_commands)
         {
             printf(" BROKEN IN LINE %zu\n", IP);
             return;
-        };
+        };*/
 
         int elements_read = 0;
         char command[20] = "";
@@ -134,10 +135,11 @@ void TranslateCode(InputData buffer)
             {
                 fprintf(stdout,"%d %d\n", All_labels[i].number, All_labels[i].address);
             }
-            for (size_t i = 0; i < buffer.nLines; i++)
+            /*for (size_t i = 0; i < buffer.nLines; i++)
             {
                 fprintf(stdout,"%s\n", buffer.line_ptr[i]);
-            }
+            }*/
+            printf("Number of lines %zu and elements %zu\n", IP, code_counter);
             // --------------
             if (nErrors == 0)
                 VerifyLabels(buffer, array_for_code, code_counter);
@@ -292,7 +294,7 @@ ASMcommands DefineMode(char* command)
 
 void FillFile(int* array, size_t counter, FILE* file_pointer)
 {
-    fprintf(file_pointer, "%d ", (int) nArgs_plus_commands);
+    fprintf(file_pointer, "%d ", (int) counter);
 
     for (size_t i = 0; i < counter; i++)
     {
