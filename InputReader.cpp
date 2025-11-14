@@ -5,7 +5,7 @@ char ASM_file_name[50] = "";
 size_t number_of_labels = 0;
 Label All_labels[20] = {{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},
                         {-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1}};
-                        // бля надо через функцию // ubrat otsuda
+                        // ubrat otsuda
 size_t CountLines (char* poem)
 {
     size_t nLines = 0;

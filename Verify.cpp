@@ -21,10 +21,10 @@ void PrintError (ASMerr_t err)
             fprintf(stdout, "EXTRA ARGUMENT\n");
             break;
         case WRONG_REG:
-            fprintf(stdout, "Attempting to interact unexisting register");
+            fprintf(stdout, "Attempting to interact a non-existing register");
             break;
-        case WRONG_LABEL:
-            fprintf(stdout, "Using wrong label format\n");
+        case WRONG_FORMAT:
+            fprintf(stdout, "Using wrong input format\n");
             break;
         case WRONG_ADDRESS:
             fprintf(stdout, "Uninitialized label\n");
@@ -32,6 +32,8 @@ void PrintError (ASMerr_t err)
         case NOWHERE_TO_RETURN:
             fprintf(stdout, "Missing CALL function for your RET function\n");
             break;
+        case SEG_FAULT:
+            fprintf(stdout, "Segmentation failure caused by ");
         default:
             fprintf(stdout, "ASM_DUMP triggered for an unknown reason\n");
             break;
@@ -61,7 +63,7 @@ ASMerr_t Verify(ASMcommands mode,  int nElements)
             return EXTRA_ARGUMENT;
         break;
     default:
-        return ASM_CORRECT;
+        //return ASM_CORRECT;
         break;
     }
 

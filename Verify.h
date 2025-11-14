@@ -9,9 +9,10 @@ enum ASMerr_t {
     MISSING_ARGUMENT = 2,
     WRONG_FUNC = 3,
     WRONG_REG = 4,
-    WRONG_LABEL = 5,
+    WRONG_FORMAT = 5,
     WRONG_ADDRESS = 6,
-    NOWHERE_TO_RETURN = 7
+    NOWHERE_TO_RETURN = 7,
+    SEG_FAULT = 8
 };
 
 enum ASMcommands{
@@ -32,7 +33,11 @@ enum ASMcommands{
     PUSHR = 10,
     POPR = 11,
     CALL = 15,
-    RET = 16
+    RET = 16,
+    SQRT = 17,
+    DRAW = 18,
+    PUSHM = 19,
+    POPM = 20,
 
 };
 

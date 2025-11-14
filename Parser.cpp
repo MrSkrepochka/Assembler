@@ -4,37 +4,29 @@
 
 void TranslateCode(InputData buffer)
 {
-    int* array_for_code = (int*) calloc ( 3 * nArgs_plus_commands, sizeof(int));
+    int* array_for_code = (int*) calloc ( 2 * buffer.nLines, sizeof(int));
     size_t code_counter = 0;
 
     char ByteCode_name[20] = "ByteCode.txt";
-    //fprintf(stdout, "Enter your byte-code file name (.txt)\n");
-    //fscanf(stdin, "%19s", ByteCode_name);
-
-
+    
     FILE* ByteCode_file = fopen(ByteCode_name, "w");
 
     size_t IP = 0;
 
     while (IP < buffer.nLines)
     {
-        /*if (code_counter == nArgs_plus_commands)
-        {
-            printf(" BROKEN IN LINE %zu\n", IP);
-            return;
-        };*/
 
         int elements_read = 0;
         char command[20] = "";
 
         int arg = 0;
-        int extra_arg = 0;
+        char extra_arg[20] = "";
         char label[20] = "";
 
-        elements_read = sscanf(buffer.line_ptr[IP],"%19s %19s %d", command, label, &extra_arg);
+        elements_read = sscanf(buffer.line_ptr[IP],"%19s %19s %19s", command, label, extra_arg);
 
         if ( (arg = atoi (label)) == 0 && strcmp(label, "0") != 0)
-            elements_read--;
+            elements_read--; // nahuya?
 
 
         ASMcommands mode = DefineMode (command);
@@ -49,7 +41,7 @@ void TranslateCode(InputData buffer)
             All_labels[number_of_labels].number = atoi(command + 1);
             All_labels[number_of_labels].address = (int) code_counter;
             if (atoi (command + 1) == 0 && strcmp (command + 1, "0") != 0)
-                ASM_DUMP(WRONG_LABEL, IP);
+                ASM_DUMP(WRONG_FORMAT, IP);
 
             number_of_labels++;
             mode = SKIP_LINE;
@@ -124,32 +116,10 @@ void TranslateCode(InputData buffer)
 
         case EXIT:
             array_for_code[code_counter] = EXIT;
-            code_counter++; // поменял порядок!!!
-
-
+            code_counter++;
 
             ASM_VERIFY(POP, elements_read, IP);
             IP++;
-            //--------- DEBUG ---------
-            for (size_t i = 0; i < number_of_labels; i++)
-            {
-                fprintf(stdout,"%d %d\n", All_labels[i].number, All_labels[i].address);
-            }
-            /*for (size_t i = 0; i < buffer.nLines; i++)
-            {
-                fprintf(stdout,"%s\n", buffer.line_ptr[i]);
-            }*/
-            printf("Number of lines %zu and elements %zu\n", IP, code_counter);
-            // --------------
-            if (nErrors == 0)
-                VerifyLabels(buffer, array_for_code, code_counter);
-
-            FillFile(array_for_code, code_counter, ByteCode_file);
-
-            fclose(ByteCode_file);
-            free(array_for_code);
-            return;
-
 
             break;
 
@@ -209,11 +179,40 @@ void TranslateCode(InputData buffer)
         case RET:
             array_for_code[code_counter] = RET;
             code_counter++;
-            //code_counter++;
             IP++;
 
             break;
 
+        case SQRT:
+            array_for_code[code_counter] = SQRT;
+            code_counter++;
+            ASM_VERIFY(POP, elements_read, IP);
+            IP++;
+            break;
+
+        case DRAW:
+            array_for_code[code_counter] = DRAW;
+            code_counter++;
+            ASM_VERIFY(POP, elements_read, IP);
+            IP++;
+            break;
+
+        case PUSHM:
+            //ASM_error = ASM_CORRECT;
+
+            array_for_code[code_counter] = PUSHM;
+            code_counter++;
+            PUSHM_POPM(array_for_code, code_counter, label, IP);
+            IP++;
+            break;
+
+        case POPM:
+
+            array_for_code[code_counter] = POPM;
+            code_counter++;
+            PUSHM_POPM(array_for_code, code_counter, label, IP);
+            IP++;
+            break;
 
         case WRONG_COMMAND:
 
@@ -225,16 +224,33 @@ void TranslateCode(InputData buffer)
         case SKIP_LINE:
             IP++;
             break;
+
         default:
             break;
         }
 
         ASM_error = ASM_CORRECT;
         // IP++ только в самом конце?
-    }
 
+    }
+    //--------- DEBUG ---------
+    for (size_t i = 0; i < number_of_labels; i++)
+    {
+        fprintf(stdout,"%d %d\n", All_labels[i].number, All_labels[i].address);
+    }
+    /*for (size_t i = 0; i < buffer.nLines; i++)
+    {
+        fprintf(stdout,"%s\n", buffer.line_ptr[i]);
+    }*/
+    printf("Number of lines %zu and elements %zu\n", IP, code_counter);
+    // --------------
+    if (nErrors == 0)
+        VerifyLabels(buffer, array_for_code, code_counter);
+    FillFile(array_for_code, code_counter, ByteCode_file);
     fclose(ByteCode_file);
     free(array_for_code);
+
+
     return;
 }
 
@@ -270,8 +286,14 @@ ASMcommands DefineMode(char* command)
     if (strcmp (command, "DIV")== 0 )
         return DIV;
 
+    if (strcmp (command, "SQRT")== 0 )
+        return SQRT;
+
     if (strcmp (command, "JB") == 0)
         return JB;
+
+    if (strcmp (command, "DRAW") == 0)
+        return DRAW;
 
     if (strcmp (command, "JBE") == 0)
         return JBE;
